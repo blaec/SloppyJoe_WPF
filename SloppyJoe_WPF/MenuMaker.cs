@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Text;
 
 namespace SloppyJoe_WPF
 {
-    class MenuMaker
+    class MenuMaker : INotifyPropertyChanged
     {
         private Random random = new Random();
         private List<String> meats = new List<String>
@@ -31,6 +32,17 @@ namespace SloppyJoe_WPF
             UpdateMenu();
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler propertyChangedEvent = PropertyChanged;
+            if (propertyChangedEvent != null)
+            {
+                propertyChangedEvent(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
         private MenuItem CreateMenuItem()
         {
             string randomMeat = meats[random.Next(meats.Count)];
@@ -47,6 +59,8 @@ namespace SloppyJoe_WPF
                 Menu.Add(CreateMenuItem());
             }
             GeneratedDate = DateTime.Now;
+
+            OnPropertyChanged("GeneratedDate");
         }
     }
 }
